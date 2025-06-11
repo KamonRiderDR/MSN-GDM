@@ -1,2 +1,2 @@
 # MSN-GDM
-Code for MSN-GDM (coming soon)
+Code for MSN-GDM

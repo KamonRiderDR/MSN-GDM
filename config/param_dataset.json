@@ -1,0 +1,107 @@
+[
+ {
+  "dataset": "Cora",
+  "num_train_per_class": 77,
+  "num_val": 542,
+  "num_test": 1627,
+  "seed": 629014539,
+  "gamma1": 0.6,
+  "gamma2": 0.6,
+  "J": 7
+ },
+ {
+  "dataset": "Pubmed",
+  "num_train_per_class": 1314,
+  "num_val": 3943,
+  "num_test": 11832,
+  "seed": 2108550661,
+  "gamma1": 0.8,
+  "gamma2": 0.6,
+  "J": 2
+ },
+ {
+  "dataset": "Computers",
+  "num_train_per_class": 275,
+  "num_val": 2750,
+  "num_test": 8252,
+  "seed": 983997847,
+  "gamma1": 0.6,
+  "gamma2": 0.6,
+  "J": 6
+ },
+ {
+  "dataset": "Citeseer",
+  "num_train_per_class": 111,
+  "num_val": 665,
+  "num_test": 1996,
+  "seed": 4019585660,
+  "gamma1": 0.7,
+  "gamma2": 0.7,
+  "J": 3
+ },
+ {
+  "dataset": "Photo",
+  "num_train_per_class": 191,
+  "num_val": 1530,
+  "num_test": 4592,
+  "seed": 983997847,
+  "gamma1": 0.7,
+  "gamma2": 0.4
+ },
+ {
+  "dataset": "Texas",
+  "num_train_per_class": 7,
+  "num_val": 37,
+  "num_test": 111,
+  "seed": 983997847,
+  "gamma1": 0.3,
+  "gamma2": 0.5
+ },
+ {
+  "dataset": "Cornell",
+  "num_train_per_class": 7,
+  "num_val": 37,
+  "num_test": 111,
+  "seed": 4023022221,
+  "gamma1": 0.3,
+  "gamma2": 0.5
+ },
+ {
+  "dataset": "CS",
+  "num_train_per_class": 244,
+  "num_val": 3667,
+  "num_test": 11006,
+  "seed": 2108550661,
+  "gamma1": 0.5,
+  "gamma2": 0.6,
+  "J": 3
+ },
+ {
+  "dataset": "Actor",
+  "num_train_per_class": 304,
+  "num_val": 1520,
+  "num_test": 4560,
+  "seed": 983997847,
+  "gamma1": 0.7,
+  "gamma2": 0.6,
+  "J":3
+ },
+ {
+  "dataset": "DBLP",
+  "num_train_per_class": 886,
+  "num_val": 3543,
+  "num_test": 10629,
+  "seed": 4023022221,
+  "gamma1": 0.3,
+  "gamma2": 0.5
+ },
+ {
+    "dataset": "Physics",
+    "num_train_per_class": 1380,
+    "num_val": 6899,
+    "num_test": 20694,
+    "seed": 629014539,
+    "gamma1": 0.7,
+    "gamma2": 0.5
+   }
+]

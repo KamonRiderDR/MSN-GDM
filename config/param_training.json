@@ -1,0 +1,40 @@
+{
+ "datasets": [
+  "Cora",
+  "Pubmed",
+  "Computers",
+  "Citeseer",
+  "Photo",
+  "Texas",
+  "Cornell",
+  "CS",
+  "Actor",
+  "DBLP",
+  "Physics"
+ ],
+ "seeds": [
+  1941488137,
+  4198936517,
+  983997847,
+  4023022221,
+  4019585660,
+  2108550661,
+  1648766618,
+  629014539,
+  3212139042,
+  2424918363
+ ],
+ "epochs": 2000,
+ "lr": 0.0005,
+ "weight_decay": 0.0005,
+ "patience": 200,
+ "dropout": 0.1,
+ "train_rate": 0.2,
+ "val_rate": 0.2,
+ "gamma1": 0.5,
+ "gamma2": 0.6,
+
+ "gamma": 0.7,
+ "alpha": 0.8,
+ "J": 5
+}
