@@ -164,15 +164,6 @@ def train_epoch(args, model, optimizer, data):
     
     val_loss_history = []
     val_acc_history = []
-
-    # #* TEMP. DELETE THIS IN THE END    
-    # device = torch.device('cuda:{}'.format(args.device) if torch.cuda.is_available() else 'cpu')
-    # args.hidden = 256
-    # teacher_model = GCN(args)
-    # teacher_model.load_state_dict(torch.load("{}/ckpt/{}/teacher_GCN.pth".format(args.root, args.dataset)))
-    # teacher_model.to(device)
-    # tea_out, tea_mid = teacher_model(data)
-    # args.hidden = 64
     
     for epoch in range(args.epochs):
         #* train process
@@ -184,9 +175,6 @@ def train_epoch(args, model, optimizer, data):
         loss = F.nll_loss(out, data.y[data.train_mask])
         loss.backward()
         optimizer.step()
-        # node_sim_dist = node_sim_metrics(args, x=mid, edge_index=data.edge_index)        
-        # node_sim_dist = node_sim_metrics(args, x=mid[-1], edge_index=data.edge_index)
-        # node_sim_dist = node_sim_metrics_h(args, x=mid[-1], x_kd=tea_mid, edge_index=data.edge_index)
 
         duration = time.time() - time_begin
         time_run.append(duration)
@@ -194,7 +182,6 @@ def train_epoch(args, model, optimizer, data):
         #* val && test
         [train_acc, val_acc, tmp_test_acc], preds, \
         [train_loss, val_loss, tmp_test_loss] = test(model, data)
-        #* early stopping
         if val_loss < best_val_loss:
             best_val_acc = val_acc
             best_test_acc = tmp_test_acc
@@ -211,8 +198,6 @@ def train_epoch(args, model, optimizer, data):
                 os.mkdir(save_path)
             torch.save(model.state_dict(), "{}/ckpt/{}/teacher_{}.pth".format(args.root, args.dataset, args.net))
 
-        # if epoch % 2 == 0:
-        #     dist_metrics.append(node_sim_dist.detach().cpu())
         if epoch % 50 == 0:
             print("Epoch: {:03d}\ttrain loss: {:.6f} \t val acc: {:.6f} \t test acc: {:.6f}".format(
                 epoch, train_loss, val_acc, tmp_test_acc
@@ -221,10 +206,6 @@ def train_epoch(args, model, optimizer, data):
             print("Early stop at epoch {:03d}\n".format(epoch))
             break
         
-    # np.save("{}/save/dist_metrics/tea_{}_{}_dist.npy".format(args.root, args.net, args.dataset), np.array(dist_metrics))
-    # np.save("{}/save/dist_metrics/tea_{}_{}_dist_h.npy".format(args.root, args.net, args.dataset), np.array(dist_metrics))
-    # dist_metrics = []
-
     return best_val_acc, best_test_acc
 
 def test(model, data):
@@ -321,13 +302,7 @@ def train_std(args):
         val_lb (_type_): _description_
     """
     device = torch.device('cuda:{}'.format(args.device) if torch.cuda.is_available() else 'cpu')
-    # device = torch.device('cpu')
-    # dataset = DataLoader(args.dataset)
-    # data = dataset[0]
-    # num_train_per_class = int(round(args.train_rate * len(data.y) / dataset.num_classes))
-    # num_val = int(round(args.val_rate * len(data.y)))
-    # num_test = int(len(data.y) - num_train_per_class * dataset.num_classes - num_val)
-    
+
     json_path = str("{}/config/param_dataset.json".format(args.root))
     if "ogbn" not in args.dataset:
         param_dict = load_dataset_param(args, json_path)
@@ -340,7 +315,6 @@ def train_std(args):
 
     for i in range(args.runs):
         print("Running {:03d} times".format(i+1))
-        # args.seed = param_dict["seed"]
         args.seed = 666
         # args.seed = seeds[i]
         setup_seed(args.seed)
@@ -408,6 +382,3 @@ def run(args, type=None):
 if __name__ == "__main__":
     args = get_student_args()
     run(args, type="std")
-    # for dataset in datasets:
-    #     args.dataset = dataset
-    #     run(args)
