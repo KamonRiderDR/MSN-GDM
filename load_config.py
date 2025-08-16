@@ -26,21 +26,9 @@ from model.TeacherModel import BernNet, GCN
 from model.StudentModel import SpecMLP
 
 
-seeds=[1941488137,4198936517,983997847,4023022221,4019585660,2108550661,1648766618,629014539,3212139042,2424918363]
+seeds=[]
 datasets = ["Cora", "Pubmed", "Computers", "Citeseer", "Photo", "Texas", "Cornell", "CS", "Actor", "DBLP", "Physics"]
-uid = {
-        "Cora":         7,
-        "Photo":        2,
-        "Computers":    2,
-        "Pubmed":       5,
-        "Citeseer":     4,
-        "Texas":        2,
-        "Cornell":      5,
-        "CS":           5,
-        "Actor":        2,
-        "DBLP"  :       3,
-        "Physics":      7
-    }
+uid = {}
 
 def load_config(args):
     global datasets
@@ -110,20 +98,8 @@ def update_dataset_param(args, dataset, item, value):
     f.close()
 
 args = get_student_args()
-# # load_config(args)
-# load_training_config(args)
-
-# for dataset in datasets:
-#     update_dataset_param(args, dataset, "seed", seeds[uid[dataset]])
 
 if __name__ == "__main__":
-    # dataset = DataLoader(name="Cora")
-    # dataset = dataset_node_sampler(args, dataset)
-    # data = dataset[0]
-    # print(data.edge_index.shape)
-    # print(data.same_edge_index.shape)
-    # print(data.diff_edge_index.shape)
-
     dataset = DataLoader("Physics")
     data = dataset[0]
 
