@@ -103,7 +103,6 @@ def train_epoch_minibatch(args,
             # print(tea_out.shape)
 
             # TODO
-            # loss = get_loss(args, tea_out, stu_out, tea_mid, stu_mid, data)
             print(stu_out.shape)
             print(train_idx.shape)
 
@@ -224,35 +223,16 @@ def train_epoch_ogbn(args,
         student_model.train()
         optimizer.zero_grad()
         
-        # tea_out, tea_mid = teacher_model(data)
         stu_out, stu_mid = student_model(data)
-        # if args.dist_metrics == "ms_mse" or args.dist_metrics == "ms_cos":
-        #     # node_sim_dist = ms_node_sim_metrics(args, x=stu_mid[-1], data=data)
-        #     node_sim_dist = ms_node_sim_metrics_ff(args, data, x=stu_mid[-1], x_tea = tea_mid)
-        # else:
-        #     node_sim_dist = node_sim_metrics(args, x=stu_mid[-1], edge_index=data.edge_index)
-        #     # node_sim_dist = node_sim_metrics_h(args, x=stu_mid[-1], x_kd=tea_mid, edge_index=data.edge_index)
 
-        # nll_loss = F.nll_loss(stu_out[train_idx], data.y.squeeze(1)[train_idx])
-        # kd_loss = KL_loss(tea_mid, stu_mid[-1], T=args.tau)
         nll_criterion = nn.NLLLoss()
         kd_criterion = nn.KLDivLoss(reduction="batchmean", log_target=True)
         nll_loss = nll_criterion(stu_out[train_idx], data.y.squeeze(1)[train_idx])
         kd_loss = kd_criterion(stu_out, tea_out)
-        # kd_loss = F.kl_div(stu_mid[-1], 
-        #                    tea_mid, 
-        #                    reduction='batchmean',
-        #                    log_target=True)
         ms_optim_loss = ms_optim_loss_J(args, stu_mid, tea_mid, data)   # note: kv_div is for ogbn only ...
-        # loss = nll_loss * (1 - args.gamma) + (ms_optim_loss + kd_loss) * args.gamma
-        # loss = nll_loss * (1 - args.gamma) \
-        #     + (kd_loss) * args.gamma \
-        #     + ms_optim_loss * args.gamma * 0
         loss = nll_loss * 0.05 \
             + (kd_loss * args.gamma \
                 + ms_optim_loss * (1 - args.gamma)) * 0.95
-        
-        # loss = get_loss(args, tea_out, stu_out, tea_mid, stu_mid, data)
         loss.backward()
         optimizer.step()
 
@@ -262,9 +242,7 @@ def train_epoch_ogbn(args,
         #* val && test
         evaluator = Evaluator(args.dataset)
         train_acc, val_acc, tmp_test_acc = test_ogbn(args, student_model, data, split_idx, evaluator)
-        # early stopping
-        #* modify
-        # if val_acc > best_val_acc:
+
         if val_acc > best_val_acc:
             best_val_acc = val_acc
             best_test_acc = tmp_test_acc
@@ -527,15 +505,6 @@ def train_std(args):
         num_val = param_dict["num_val"]
         num_test = param_dict["num_test"]
         seed = param_dict["seed"]
-    # args.J = param_dict["J"]
-    # args.gamma1 = param_dict["gamma1"]
-    # args.gamma2 = param_dict["gamma2"]
-    
-    # dataset = DataLoader(args.dataset)
-    # data = dataset[0]
-    # num_train_per_class = int(round(args.train_rate * len(data.y) / dataset.num_classes))
-    # num_val = int(round(args.val_rate * len(data.y)))
-    # num_test = int(len(data.y) - num_train_per_class * dataset.num_classes - num_val)
 
     test_accs = []
     results_path = str("{}/logs/results/student/{}_{}_{}_{}.txt".format(args.root, args.net, args.student_model, args.dataset, args.device))
@@ -555,13 +524,10 @@ def train_std(args):
         args.num_classes = dataset.num_classes
         args.num_features = dataset.num_features    
 
-        # dataset = dataset_node_sampler(args, dataset)
-        # preprocess for toy datasets
         if args.distill_type == "SpecMLP" and "ogbn" not in args.dataset:
             dataset = multi_scale_node_sampler(args, dataset)
         data = dataset[0]
         if "ogbn" in args.dataset:
-            # print("Hey Jude")
             data.adj_t = data.adj_t.to_symmetric()
             row, col,_ = data.adj_t.t().coo()
             data.edge_index = torch.stack([row, col], axis=0)
@@ -654,15 +620,6 @@ def grid_search(args):
     J_s = [2, 3, 4, 5, 6, 7]
     alpha_s = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
     
-    # For OGBN
-    # dropouts = [0.0, 0.05, 0.1, 0.15, 0.2]
-    # gammas = [0.2, 0.3, 0.4, 0.5, 0.6, 0.8]
-    # gammas = [0.0, 0.05, 0.1, 0.15, 0.2, 0.3]
-    # gammas = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
-    # gammas = [0.7]
-    # J_s = [3, 4, 5, 6]
-    # alpha_s = [0.2, 0.4, 0.6, 0.8]
-
     for gamma_, alpha_, J_ in product(gammas, alpha_s, J_s):
         args.gamma = gamma_
         args.J = J_
@@ -673,11 +630,7 @@ def grid_search(args):
             f.write("\n------------gamma: {}---------------------alpha:{} ---------------J: {} -------------------DT: {}-----------------\n".format(
                 args.gamma, args.alpha, args.J, args.distill_type))
         f.close()
-        # ablations = ["KD", "GLNN", "FF-G2M"]
-        # for name in ablations:
-        #     args.distill_type = name
-        #     run(args, type="std")
-        # args.distill_type = "SpecMLP"
+
         run(args, type="std")
 
 
@@ -685,19 +638,3 @@ if __name__ == '__main__':
     args = get_student_args()
     init_training_params(args)
     grid_search(args)
-    # args.alpha = 0.3
-    # args.gamma = 1.0
-    # args.J = 4
-    # run(args, type="std")
-    # ablations = ["KD", "GLNN", "FF-G2M"]
-    # for name in ablations:
-    #     args.distill_type = name
-    #     run(args, type="std")
-    # args.distill_type = "SpecMLP"
-    # run(args, type="std")    
-    # distill_s = ["FF-G2M", "GLNN", "KD"]
-    # # distill_s = ["GLNN", "KD"]
-    # for distill_ in distill_s:
-    #     args.distill_type = distill_
-    #     run(args, type="std")
-
