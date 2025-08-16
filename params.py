@@ -7,8 +7,6 @@ LastEditTime: 2024-06-19 16:31:07
 '''
 import argparse
 
-'''val early stop dataset: [Citeseer, Computers, CS, Physics]'''
-
 def get_teacher_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--seed', type=int, default=2108550661, help='seeds for random splits.')
@@ -16,7 +14,7 @@ def get_teacher_args():
     parser.add_argument('--lr', type=float, default=0.0005, help='learning rate.')  # 0.001
     parser.add_argument('--weight_decay', type=float, default=0.0005, help='weight decay.')  
     parser.add_argument('--early_stopping', type=int, default=200, help='early stopping.')
-    parser.add_argument('--hidden', type=int, default=128, help='hidden units.')    # 256 for SAGE-Citeseer, Computers, CS
+    parser.add_argument('--hidden', type=int, default=128, help='hidden units.')    
     parser.add_argument('--dropout', type=float, default=0.3, help='dropout for neural networks.')
     parser.add_argument('--root', type=str, default="/home/dongrui/code/mm-gmlp/SpecMLP")
     parser.add_argument('--dprate', type=float, default=0.5, help='dropout for propagation layer.')
@@ -51,7 +49,7 @@ def get_student_args():
     parser.add_argument('--lr', type=float, default=0.001, help='learning rate.')   # 0.001      
     parser.add_argument('--weight_decay', type=float, default=0.0005, help='weight decay.')  
     parser.add_argument('--early_stopping', type=int, default=200, help='early stopping.')
-    parser.add_argument('--hidden', type=int, default=256, help='hidden units.') # 64, 256 for SAGE-Citeseer, Computers, CS
+    parser.add_argument('--hidden', type=int, default=256, help='hidden units.') 
     parser.add_argument('--dropout', type=float, default=0.1, help='dropout for neural networks.')
     parser.add_argument('--root', type=str, default="/home/dongrui/code/mm-gmlp/SpecMLP")
     parser.add_argument('--dprate', type=float, default=0.5, help='dropout for propagation layer.')
